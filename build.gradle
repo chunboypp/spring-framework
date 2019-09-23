@@ -250,6 +250,7 @@ project("spring-core") {
 		}
 	}
 
+
 	jar {
 		// inline all repackaged asm and cglib classes directly into the spring-core jar
 		dependsOn asmRepackJar
