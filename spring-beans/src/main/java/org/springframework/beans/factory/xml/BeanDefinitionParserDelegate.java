@@ -73,6 +73,7 @@ import org.springframework.util.xml.DomUtils;
  * {@link BeanDefinitionParser BeanDefinitionParsers} or
  * {@link BeanDefinitionDecorator BeanDefinitionDecorators}.
  *
+ * 有状态的委托类，用于解析XML bean定义。旨在供主解析器和任何扩展BeanDefinitionParsers或BeanDefinitionDecorators使用。
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Rod Johnson
@@ -512,6 +513,7 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
+			//genricbeandefinition
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);

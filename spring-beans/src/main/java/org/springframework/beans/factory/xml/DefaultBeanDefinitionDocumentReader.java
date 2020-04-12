@@ -49,7 +49,9 @@ import org.springframework.util.StringUtils;
  * to produce this format). {@code <beans>} does not need to be the root
  * element of the XML document: this class will parse all bean definition elements
  * in the XML file, regardless of the actual root element.
- *
+ * 	BeanDefinitionDocumentReader接口的默认实现，该接口根据“ spring-beans” DTD和XSD格式（Spring的默认XML bean定义格式）读取bean定义。
+ * 	所需XML文档的结构，元素和属性名称在此类中进行了硬编码。（当然，如果需要产生此格式，可以运行转换）。
+ * <beans>不必是XML文档的根元素：此类将解析XML文件中的所有bean定义元素，而与实际的根元素无关。
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Rob Harrop
@@ -89,12 +91,16 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * (or DTD, historically).
 	 * <p>Opens a DOM Document; then initializes the default settings
 	 * specified at the {@code <beans/>} level; then parses the contained bean definitions.
+	 *
+	 * 注册bean的定义。
+	 * 注册到哪里呢：注册到defualtlistablebeanfactory 中的concurrentmap beandefenitionmap
 	 */
 	@Override
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
-		this.readerContext = readerContext;
+		this.readerContext = readerContext;//对资源 命名空间解析 错误解析 事件
 		logger.debug("Loading bean definitions");
 		Element root = doc.getDocumentElement();
+		//真正注册的地方
 		doRegisterBeanDefinitions(root);
 	}
 
@@ -118,6 +124,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 	/**
 	 * Register each bean definition within the given root {@code <beans/>} element.
+	 * 真真进行注册的地方
 	 */
 	protected void doRegisterBeanDefinitions(Element root) {
 		// Any nested <beans> elements will cause recursion in this method. In
@@ -126,9 +133,12 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// the new (child) delegate with a reference to the parent for fallback purposes,
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
-		BeanDefinitionParserDelegate parent = this.delegate;
+		//任何嵌套的<beans>元素都将导致此方法中的递归。为了正确传播和保留<beans> default- *属性，
+		// 请跟踪当前（父）委托，该委托可以为null。创建具有父级引用的新（子级）委托以进行回退，
+		// 然后最终将this.delegate重置回其原始（父级）引用。此行为模拟了一组委托，而实际上没有必要。
+		BeanDefinitionParserDelegate parent = this.delegate;//可以自定义资源解析器
 		this.delegate = createDelegate(getReaderContext(), root, parent);
-
+		//对profile的解析
 		if (this.delegate.isDefaultNamespace(root)) {
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
@@ -145,6 +155,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		preProcessXml(root);
+		//真正解析的地方 TODO
 		parseBeanDefinitions(root, this.delegate);
 		postProcessXml(root);
 
@@ -165,7 +176,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
-		if (delegate.isDefaultNamespace(root)) {
+		if (delegate.isDefaultNamespace(root)) {//使用默认的代理对象
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
@@ -186,16 +197,16 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
-		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
+		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {//解析import
 			importBeanDefinitionResource(ele);
 		}
-		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {//解析alias 别名
 			processAliasRegistration(ele);
 		}
-		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {//解析bean  最复杂
 			processBeanDefinition(ele, delegate);
 		}
-		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
+		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {//解析嵌套bean
 			// recurse
 			doRegisterBeanDefinitions(ele);
 		}

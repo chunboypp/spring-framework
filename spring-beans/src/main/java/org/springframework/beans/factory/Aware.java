@@ -28,6 +28,11 @@ package org.springframework.beans.factory;
  * Refer to {@link org.springframework.context.support.ApplicationContextAwareProcessor}
  * for an example of processing specific {@code *Aware} interface callbacks.
  *
+ * 标记超级接口，用于指示bean有资格通过回调样式方法由Spring容器通知特定框架对象。
+ * 实际的方法签名是由各个子接口确定的，但通常应仅由一个接受单个参数的void返回方法组成。
+ * <p>请注意，仅实现Aware不会提供默认功能。而是必须显式完成处理，例如在BeanPostProcessor中。
+ * 有关处理特定* Aware接口回调的示例，请参考ApplicationContextAwareProcessor。
+ *
  * @author Chris Beams
  * @author Juergen Hoeller
  * @since 3.1
