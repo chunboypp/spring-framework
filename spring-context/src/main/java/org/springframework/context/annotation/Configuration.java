@@ -1,18 +1,3 @@
-/*
- * Copyright 2002-2019 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package org.springframework.context.annotation;
 
@@ -31,6 +16,7 @@ import org.springframework.stereotype.Component;
  * Indicates that a class declares one or more {@link Bean @Bean} methods and
  * may be processed by the Spring container to generate bean definitions and
  * service requests for those beans at runtime, for example:
+ * 指示一个类声明一个或多个{@link Bean @Bean}方法，并且可以由Spring容器进行处理以在运行时为这些bean生成bean定义和服务请求，例如：
  *
  * <pre class="code">
  * &#064;Configuration
@@ -50,7 +36,9 @@ import org.springframework.stereotype.Component;
  * {@link AnnotationConfigApplicationContext} or its web-capable variant,
  * {@link org.springframework.web.context.support.AnnotationConfigWebApplicationContext
  * AnnotationConfigWebApplicationContext}. A simple example with the former follows:
- *
+ *<p> {@ code @Configuration}类通常使用{@link AnnotationConfigApplicationContext}或具有Web功能的变体
+ * {@link org.springframework.web.context.support.AnnotationConfigWebApplicationContext AnnotationConfigWebApplicationContext}进行引导。
+ * 前者的一个简单示例如下：
  * <pre class="code">
  * AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
  * ctx.register(AppConfig.class);
@@ -63,13 +51,16 @@ import org.springframework.stereotype.Component;
  * {@link org.springframework.web.context.support.AnnotationConfigWebApplicationContext
  * AnnotationConfigWebApplicationContext} for web configuration instructions in a
  * {@code Servlet} container.
+ * <p>有关更多详细信息，请参见{@link AnnotationConfigApplicationContext} Javadocs，有关{@code Servlet}容器中的Web配置说明，
+ * 请参见{@link org.springframework.web.context.support.AnnotationConfigWebApplicationContext AnnotationConfigWebApplicationContext}。
  *
  * <h3>Via Spring {@code <beans>} XML</h3>
  *
  * <p>As an alternative to registering {@code @Configuration} classes directly against an
  * {@code AnnotationConfigApplicationContext}, {@code @Configuration} classes may be
  * declared as normal {@code <bean>} definitions within Spring XML files:
- *
+ *<p>作为直接在{@code AnnotationConfigApplicationContext}上注册{@code @Configuration}类的一种替代方法，
+ * 可以在Spring XML文件中将{@code @Configuration}类声明为常规{@code <bean>}定义：
  * <pre class="code">
  * &lt;beans&gt;
  *    &lt;context:annotation-config/&gt;
@@ -80,7 +71,8 @@ import org.springframework.stereotype.Component;
  * <p>In the example above, {@code <context:annotation-config/>} is required in order to
  * enable {@link ConfigurationClassPostProcessor} and other annotation-related
  * post processors that facilitate handling {@code @Configuration} classes.
- *
+ *<p>在上面的示例中，需要{@code <context：annotation-config />}，以启用{@link ConfigurationClassPostProcessor}和
+ * 其他与注释相关的后处理器，以方便处理{@code @Configuration}类。
  * <h3>Via component scanning</h3>
  *
  * <p>{@code @Configuration} is meta-annotated with {@link Component @Component}, therefore
@@ -89,7 +81,9 @@ import org.springframework.stereotype.Component;
  * advantage of {@link Autowired @Autowired}/{@link javax.inject.Inject @Inject}
  * like any regular {@code @Component}. In particular, if a single constructor is present
  * autowiring semantics will be applied transparently for that constructor:
- *
+ *<p> {@ code @Configuration}用{@link Component @Component}进行元注释，因此{@code @Configuration}类是组件扫描的候选对象
+ * （通常使用Spring XML的{@code <context：component-scan />}元素），因此也可以像任何常规{@code @Component}一样利用{@link Autowired @Autowired}
+ * / {@ link javax.inject.Inject @Inject}的优势。特别是，如果存在单个构造函数，则自动为该构造函数自动应用语义：
  * <pre class="code">
  * &#064;Configuration
  * public class AppConfig {
@@ -107,7 +101,7 @@ import org.springframework.stereotype.Component;
  * <p>{@code @Configuration} classes may not only be bootstrapped using
  * component scanning, but may also themselves <em>configure</em> component scanning using
  * the {@link ComponentScan @ComponentScan} annotation:
- *
+ *<p> {@ code @Configuration}类不仅可以使用组件扫描来引导，还可以使用{@link ComponentScan @ComponentScan}注释本身来<em>配置</ em>组件扫描：
  * <pre class="code">
  * &#064;Configuration
  * &#064;ComponentScan("com.acme.app.services")
@@ -124,7 +118,7 @@ import org.springframework.stereotype.Component;
  * <p>Externalized values may be looked up by injecting the Spring
  * {@link org.springframework.core.env.Environment} into a {@code @Configuration}
  * class &mdash; for example, using the {@code @Autowired} annotation:
- *
+ *<p>可以通过注入弹簧来查找外部值
  * <pre class="code">
  * &#064;Configuration
  * public class AppConfig {
@@ -143,6 +137,8 @@ import org.springframework.stereotype.Component;
  * source" objects, and {@code @Configuration} classes may contribute property sources to
  * the {@code Environment} object using the {@link PropertySource @PropertySource}
  * annotation:
+ * <p>通过{@code Environment}解析的属性驻留在一个或多个“属性源”对象中，并且{@code @Configuration}类可以使用
+ * {@link PropertySource @将属性源贡献给{@code Environment}对象PropertySource}注释：
  *
  * <pre class="code">
  * &#064;Configuration
@@ -196,6 +192,14 @@ import org.springframework.stereotype.Component;
  * the {@link Value @Value} javadocs; and see the {@link Bean @Bean} javadocs for details
  * on working with {@code BeanFactoryPostProcessor} types such as
  * {@code PropertySourcesPlaceholderConfigurer}.
+ * <p>这种方法通常与Spring的{@link org.springframework.context.support.PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer}结合使用，
+ * 可以通过{@code <context：property-或通过专用的{@code static} {@code @Bean}方法在{@code @Configuration}类中显式地</ em>
+ * （请参阅“关于BeanFactoryPostProcessor的说明-返回{@code @{@link Bean @Bean}的javadocs中的Bean}方法”）。但是请注意，通常仅在需要自定义配置
+ * （例如占位符语法等）时才需要通过{@code static} {@code @Bean}方法显式注册{@code PropertySourcesPlaceholderConfigurer}。
+ * Bean后处理器（例如{@code PropertySourcesPlaceholderConfigurer}）已经为{@code ApplicationContext}注册了一个<em>嵌入值解析器</ em>，
+ * Spring将注册一个默认的<em>嵌入值解析器</ em>可以根据{@code Environment}中注册的资源来源解析占位符。请参阅以下有关使用{@code @ImportResource}与Spring XML组合
+ * {@code @Configuration}类的部分；参见{@link Value @Value} javadocs；并查看{@link Bean @Bean} javadocs，以获取有关使用{@code BeanFactoryPostProcessor}类型
+ * （例如{@code PropertySourcesPlaceholderConfigurer}）的详细信息。
  *
  * <h2>Composing {@code @Configuration} classes</h2>
  *
