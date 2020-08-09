@@ -398,7 +398,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			throws BeanDefinitionStoreException {
 		try {
-			//将xml转换为一个document文档
+			/**
+			 * 将xml转换为一个document文档 TODO
+			 */
 			Document doc = doLoadDocument(inputSource, resource);
 			return registerBeanDefinitions(doc, resource);
 		}
@@ -437,6 +439,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see DocumentLoader#loadDocument
 	 */
 	protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
+		/**
+		 * getEntityResolver() TODO
+		 */
 		return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
 				getValidationModeForResource(resource), isNamespaceAware());
 	}
